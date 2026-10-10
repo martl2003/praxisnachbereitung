@@ -1,0 +1,37 @@
+Gerätenummer;Gerätetyp;Modell;Kaufdatum;Netto-Kaufpreis;Standort
+G0001;Tablet;Galaxy Tab;11.01.2023;1342.83;Berlin
+G0002;Tablet;Surface Go;23.02.2021;1076.18;München
+G0003;Tablet;iPad;08.09.2024;1931.54;München
+G0004;Laptop;Dell XPS;05.05.2025;1007.88;München
+G0005;Drucker;Canon Pixma;03.11.2021;823.23;Berlin
+G0006;Smartphone;Samsung S21;01.01.2024;1257.96;München
+G0007;Laptop;Lenovo ThinkPad;13.06.2021;869.09;Hamburg
+G0008;Beamer;Epson EB;23.06.2025;1323.76;Hamburg
+G0009;Laptop;Dell XPS;10.04.2023;1458.02;München
+G0010;Laptop;Dell XPS;09.11.2023;1786.37;München
+G0011;Drucker;Brother HL;09.09.2025;1417.1;München
+G0012;Tablet;Galaxy Tab;01.06.2022;968.43;Hamburg
+G0013;Drucker;Canon Pixma;16.05.2021;1898.65;Hamburg
+G0014;Laptop;Lenovo ThinkPad;03.03.2021;1415.97;Hamburg
+G0015;Smartphone;iPhone 13;20.09.2022;661.44;München
+G0016;Drucker;Canon Pixma;30.03.2023;1501.06;Berlin
+G0017;Smartphone;Samsung S21;16.06.2021;1748.56;Berlin
+G0018;Tablet;iPad;05.10.2022;1688.07;München
+G0019;Drucker;HP LaserJet;21.08.2021;737.57;Hamburg
+G0020;Smartphone;Samsung S21;06.01.2024;740.2;München
+G0021;Monitor;Samsung Curved;22.02.2023;1134.16;München
+G0022;Tablet;iPad;20.08.2024;1591.98;Hamburg
+G0023;Drucker;Canon Pixma;19.11.2023;1335.34;Hamburg
+G0024;Monitor;Dell UltraSharp;01.03.2022;750.91;Berlin
+G0025;Beamer;Epson EB;06.12.2023;545.46;Berlin
+G0026;Laptop;Dell XPS;20.10.2023;1403.91;Hamburg
+G0027;Monitor;Samsung Curved;24.07.2022;501.64;München
+G0028;Beamer;Epson EB;19.01.2023;1246.58;Hamburg
+G0029;Laptop;Lenovo ThinkPad;21.05.2021;1553.15;Hamburg
+G0030;Beamer;Epson EB;27.03.2022;1629.76;München
+G0031;Laptop;HP EliteBook;28.04.2025;1095.62;München
+G0032;Laptop;Lenovo ThinkPad;11.11.2022;1801.36;München
+G0033;Beamer;BenQ MW550;03.03.2022;1212.29;Berlin
+G0034;Smartphone;Samsung S21;17.09.2024;1746.67;Hamburg
+G0035;Beamer;BenQ MW550;03.01.2024;644.54;Berlin
+;;;;;

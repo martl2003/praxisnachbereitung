@@ -1,21 +1,26 @@
-# praxisnachbereitung
+# Praxisnachbereitung
 
-##1. Powerquery import der einzelen CSV Dateien mit anpassung der Datentypen und Umwandlung von Werten.
+## 1. Power-Query-Import der einzelnen CSV-Dateien
 
-###Aufgefallen ist, dass die Preise mit . und nicht mit , getrennt sind -> Lösung: Zeichen ersetzen
+Import mit Anpassung der Datentypen und Umwandlung von Werten.
 
-##2. Daten durchsehen: Nullzeilen entfernen
+**Aufgefallen:** Die Preise sind mit Punkt statt mit Komma als Dezimaltrennzeichen getrennt.
+**Lösung:** Zeichen ersetzen.
 
-##3. Mit XVERWEIS Spalten "mergen"
+## 2. Daten durchsehen
 
-###Aufgefallen ist, dass die Formatierung der Spalte Mitarbeiter-ID in der Mitarbeiter Tabelle nicht korrekt ist.
+Nullzeilen entfernen.
 
-##4. Vollständige Tabelle erstellen.
+## 3. Spalten mit XVERWEIS zusammenführen
 
-##5. Pivot Tabellen erstellen
+**Aufgefallen:** Die Formatierung der Spalte `Mitarbeiter-ID` in der Mitarbeiter-Tabelle ist nicht korrekt.
 
-###Aufgefallen ist, dass man sich schnell die Tabelle kaputt macht, wenn man nicht auf die Spalten und Zeile aufpasst
+## 4. Vollständige Tabelle erstellen
 
-##6. Erstellen des Diagramms zur Darstellung
+## 5. PivotTables erstellen
 
-##7. Python Script zum Export
+**Aufgefallen:** Man macht sich die Tabelle schnell kaputt, wenn man nicht genau darauf achtet, welche Felder in Spalten und Zeilen liegen.
+
+## 6. Diagramm zur Darstellung erstellen
+
+## 7. Python-Skript zum Export

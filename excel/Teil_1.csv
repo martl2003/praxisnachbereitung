@@ -1,0 +1,46 @@
+Gerätenummer,Mitarbeiter-ID,Ausgabe am,Rückgabe am,Gerätetyp,Modell,Kaufdatum,Netto-Kaupreis,Standort,Name,Abteilung,Standort_MA
+G0035,1009,5/9/2024,,Beamer,BenQ MW550,1/3/2024,"64,454.00 €",Berlin,Univ.Prof. Heimo Karge,Marketing,Hamburg
+G0021,1008,9/30/2025,10/5/2025,Monitor,Samsung Curved,2/22/2023,"113,416.00 €",München,Dipl.-Ing. Klaus-Werner Holsten B.Sc.,IT,Hamburg
+G0024,1005,3/27/2025,7/30/2025,Monitor,Dell UltraSharp,3/1/2022,"75,091.00 €",Berlin,Alexandre Davids,Vertrieb,Berlin
+G0016,1010,7/28/2025,,Drucker,Canon Pixma,3/30/2023,"150,106.00 €",Berlin,Carolin Hande,IT,Hamburg
+G0006,1012,5/31/2025,6/10/2025,Smartphone,Samsung S21,1/1/2024,"125,796.00 €",München,Ariane Klemt-Kaul,IT,München
+G0005,1009,4/7/2024,,Drucker,Canon Pixma,11/3/2021,"82,323.00 €",Berlin,Univ.Prof. Heimo Karge,Marketing,Hamburg
+G0009,1011,7/12/2025,7/15/2025,Laptop,Dell XPS,4/10/2023,"145,802.00 €",München,Auguste Davids,IT,Hamburg
+G0011,1005,6/29/2025,8/29/2025,Drucker,Brother HL,9/9/2025,"14,171.00 €",München,Alexandre Davids,Vertrieb,Berlin
+G0028,1004,8/19/2024,,Beamer,Epson EB,1/19/2023,"124,658.00 €",Hamburg,Klemens Löffler,Vertrieb,Hamburg
+G0013,1012,5/7/2024,6/27/2024,Drucker,Canon Pixma,5/16/2021,"189,865.00 €",Hamburg,Ariane Klemt-Kaul,IT,München
+G0024,1008,3/24/2024,,Monitor,Dell UltraSharp,3/1/2022,"75,091.00 €",Berlin,Dipl.-Ing. Klaus-Werner Holsten B.Sc.,IT,Hamburg
+G0029,1002,9/21/2025,10/4/2025,Laptop,Lenovo ThinkPad,5/21/2021,"155,315.00 €",Hamburg,Eleni Hauffer,IT,Berlin
+G0005,1006,8/23/2025,9/22/2025,Drucker,Canon Pixma,11/3/2021,"82,323.00 €",Berlin,Eric Patberg B.Sc.,Vertrieb,Hamburg
+G0015,1010,3/26/2024,8/17/2025,Smartphone,iPhone 13,9/20/2022,"66,144.00 €",München,Carolin Hande,IT,Hamburg
+G0005,1012,11/3/2024,,Drucker,Canon Pixma,11/3/2021,"82,323.00 €",Berlin,Ariane Klemt-Kaul,IT,München
+G0015,1002,8/15/2024,,Smartphone,iPhone 13,9/20/2022,"66,144.00 €",München,Eleni Hauffer,IT,Berlin
+G0022,1002,8/30/2025,9/30/2025,Tablet,iPad,8/20/2024,"159,198.00 €",Hamburg,Eleni Hauffer,IT,Berlin
+G0018,1011,10/3/2024,11/27/2024,Tablet,iPad,10/5/2022,"168,807.00 €",München,Auguste Davids,IT,Hamburg
+G0035,1003,5/5/2024,,Beamer,BenQ MW550,1/3/2024,"64,454.00 €",Berlin,Paul Dobes-Stiffel,Produktion,Hamburg
+G0031,1004,1/29/2024,,Laptop,HP EliteBook,4/28/2025,"109,562.00 €",München,Klemens Löffler,Vertrieb,Hamburg
+G0027,1004,4/21/2024,7/1/2025,Monitor,Samsung Curved,7/24/2022,"50,164.00 €",München,Klemens Löffler,Vertrieb,Hamburg
+G0028,1006,12/4/2024,3/16/2025,Beamer,Epson EB,1/19/2023,"124,658.00 €",Hamburg,Eric Patberg B.Sc.,Vertrieb,Hamburg
+G0030,1012,5/15/2025,9/5/2025,Beamer,Epson EB,3/27/2022,"162,976.00 €",München,Ariane Klemt-Kaul,IT,München
+G0007,1001,9/9/2024,7/16/2025,Laptop,Lenovo ThinkPad,6/13/2021,"86,909.00 €",Hamburg,Aleksandr Weinhage,IT,Berlin
+G0022,1002,7/20/2024,1/6/2025,Tablet,iPad,8/20/2024,"159,198.00 €",Hamburg,Eleni Hauffer,IT,Berlin
+G0013,1009,1/28/2024,2/26/2025,Drucker,Canon Pixma,5/16/2021,"189,865.00 €",Hamburg,Univ.Prof. Heimo Karge,Marketing,Hamburg
+G0028,1003,10/30/2024,12/4/2024,Beamer,Epson EB,1/19/2023,"124,658.00 €",Hamburg,Paul Dobes-Stiffel,Produktion,Hamburg
+G0016,1002,5/22/2025,5/31/2025,Drucker,Canon Pixma,3/30/2023,"150,106.00 €",Berlin,Eleni Hauffer,IT,Berlin
+G0007,1001,8/11/2025,,Laptop,Lenovo ThinkPad,6/13/2021,"86,909.00 €",Hamburg,Aleksandr Weinhage,IT,Berlin
+G0035,1001,1/6/2024,,Beamer,BenQ MW550,1/3/2024,"64,454.00 €",Berlin,Aleksandr Weinhage,IT,Berlin
+G0016,1003,2/8/2024,6/9/2025,Drucker,Canon Pixma,3/30/2023,"150,106.00 €",Berlin,Paul Dobes-Stiffel,Produktion,Hamburg
+G0031,1004,2/14/2024,,Laptop,HP EliteBook,4/28/2025,"109,562.00 €",München,Klemens Löffler,Vertrieb,Hamburg
+G0004,1003,6/19/2025,9/8/2025,Laptop,Dell XPS,5/5/2025,"100,788.00 €",München,Paul Dobes-Stiffel,Produktion,Hamburg
+G0025,1005,1/18/2025,,Beamer,Epson EB,12/6/2023,"54,546.00 €",Berlin,Alexandre Davids,Vertrieb,Berlin
+G0030,1005,12/1/2023,9/24/2024,Beamer,Epson EB,3/27/2022,"162,976.00 €",München,Alexandre Davids,Vertrieb,Berlin
+G0032,1003,8/4/2024,8/2/2025,Laptop,Lenovo ThinkPad,11/11/2022,"180,136.00 €",München,Paul Dobes-Stiffel,Produktion,Hamburg
+G0014,1001,11/26/2024,3/3/2025,Laptop,Lenovo ThinkPad,3/3/2021,"141,597.00 €",Hamburg,Aleksandr Weinhage,IT,Berlin
+G0035,1001,12/15/2024,,Beamer,BenQ MW550,1/3/2024,"64,454.00 €",Berlin,Aleksandr Weinhage,IT,Berlin
+G0004,1001,8/11/2025,8/12/2025,Laptop,Dell XPS,5/5/2025,"100,788.00 €",München,Aleksandr Weinhage,IT,Berlin
+G0033,1009,3/24/2025,5/7/2025,Beamer,BenQ MW550,3/3/2022,"121,229.00 €",Berlin,Univ.Prof. Heimo Karge,Marketing,Hamburg
+G0033,1002,3/25/2025,,Beamer,BenQ MW550,3/3/2022,"121,229.00 €",Berlin,Eleni Hauffer,IT,Berlin
+G0005,1010,8/30/2025,9/25/2025,Drucker,Canon Pixma,11/3/2021,"82,323.00 €",Berlin,Carolin Hande,IT,Hamburg
+G0016,1007,5/18/2025,7/8/2025,Drucker,Canon Pixma,3/30/2023,"150,106.00 €",Berlin,Orhan Siering MBA.,IT,Berlin
+G0016,1010,5/31/2025,10/2/2025,Drucker,Canon Pixma,3/30/2023,"150,106.00 €",Berlin,Carolin Hande,IT,Hamburg
+G0006,1007,7/3/2024,,Smartphone,Samsung S21,1/1/2024,"125,796.00 €",München,Orhan Siering MBA.,IT,Berlin

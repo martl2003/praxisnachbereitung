@@ -1,42 +1,62 @@
 services:
   db:
     image: postgres:16
+
     environment:
-      POSTGRES_DB: appdb
-      POSTGRES_USER: appuser
-      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
     volumes:
-      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - ${DB_INIT_DIR}:/docker-entrypoint-initdb.d:ro
+
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}"
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
       interval: 3s
       timeout: 3s
       retries: 10
 
+
   mqtt:
     image: eclipse-mosquitto:2
+
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - "${MQTT_HOST_PORT}:${MQTT_PORT}"
+      - "${MQTT_WS_HOST_PORT}:${MQTT_WS_PORT}"
+
     volumes:
       - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
 
+
   api:
     build: .
+
     depends_on:
       db:
         condition: service_healthy
       mqtt:
         condition: service_started
+
     ports:
-      - "8000:8000"
+      - "${API_HOST_PORT}:${API_CONTAINER_PORT}"
+
     environment:
-      - PYTHONUNBUFFERED=1
-      - DB_DSN=postgresql://appuser:apppass@db:5432/appdb
-      - MQTT_HOST=mqtt
-      - MQTT_PORT=1883
+      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
+
+      API_HOST: ${API_HOST}
+      API_CONTAINER_PORT: ${API_CONTAINER_PORT}
+
+      DB_DSN: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_CONTAINER_PORT}/${POSTGRES_DB}"
+
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+
     volumes:
       - ./backend:/app/backend:rw
-      - ./.env:/app/.env:ro

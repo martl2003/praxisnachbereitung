@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <style>
+      :root { font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial; }
+      body { margin: 0; padding: 2rem; }
+      .card { max-width: 900px; margin: 2rem auto; padding: 2rem; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+      h1 { margin-top: 0; }
+      code { background: #f6f8fa; padding: .15rem .4rem; border-radius: 6px; }
+      pre { background: #0b1021; color: #eaeef3; padding: 1rem; border-radius: 8px; overflow: auto; }
+      .links a { display:inline-block; margin-right: 1rem; }
+      label { display:block; margin-top: .75rem; }
+      input { width: 100%; padding: .5rem .6rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+      button { margin-top: .75rem; padding: .5rem .9rem; border-radius: 10px; border: 1px solid #e5e7eb; background: white; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>🧩 DB-Light + MQTT Starter</h1>
+      <p>Stack mit <strong>FastAPI</strong>, <strong>Postgres</strong> und <strong>Mosquitto</strong>.</p>
+      <div class="links">
+        <a href="/health">/health</a>
+        <a href="/reports/student-status">/reports/student-status (JSON)</a>
+        <a href="/reports/student-status.csv">/reports/student-status.csv (CSV)</a>
+        <a href="/docs">/docs</a>
+      </div>
+
+      <h2>MQTT Publish (Quick Demo)</h2>
+      <form onsubmit="publish(event)">
+        <label>Topic</label>
+        <input id="topic" value="demo/test" />
+        <label>Payload</label>
+        <input id="payload" value="hello" />
+        <button>Senden</button>
+      </form>
+      <pre id="out"></pre>
+    </div>
+
+    <script>
+      async function publish(e){
+        e.preventDefault();
+        const t = document.getElementById('topic').value;
+        const p = document.getElementById('payload').value;
+        const res = await fetch(`/mqtt/publish?topic=${encodeURIComponent(t)}&payload=${encodeURIComponent(p)}`, { method: 'POST' });
+        const txt = await res.text();
+        document.getElementById('out').textContent = txt;
+      }
+    </script>
+  </body>
+</html>

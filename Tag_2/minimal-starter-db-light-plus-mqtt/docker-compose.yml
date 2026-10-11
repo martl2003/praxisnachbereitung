@@ -46,17 +46,8 @@ services:
 
     ports:
       - "${API_HOST_PORT}:${API_CONTAINER_PORT}"
-
-    environment:
-      PYTHONUNBUFFERED: ${PYTHONUNBUFFERED}
-
-      API_HOST: ${API_HOST}
-      API_CONTAINER_PORT: ${API_CONTAINER_PORT}
-
-      DB_DSN: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_CONTAINER_PORT}/${POSTGRES_DB}"
-
-      MQTT_HOST: ${MQTT_HOST}
-      MQTT_PORT: ${MQTT_PORT}
+    env_file:
+      - .env
 
     volumes:
       - ./backend:/app/backend:rw

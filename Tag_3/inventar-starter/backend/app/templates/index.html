@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <style>
+      :root { font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial; }
+      body { margin: 0; padding: 2rem; background: #f3f4f6; }
+      .card { max-width: 920px; margin: 2rem auto; padding: 2rem; background: white; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+      h1 { margin-top: 0; }
+      h2 { margin-top: 1.75rem; }
+      code { background: #4e9ae6; padding: .15rem .4rem; border-radius: 6px; }
+      pre { background: #406ce5; color: #eaeef3; padding: 1rem; border-radius: 8px; overflow: auto; }
+      .links a { display:inline-block; margin-right: 1rem; }
+      label { display:block; margin-top: .75rem; }
+      input { width: 100%; padding: .5rem .6rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+      button { margin-top: .75rem; padding: .5rem .9rem; border-radius: 10px; border: 1px solid #e5e7eb; background: white; cursor: pointer; }
+      .hint { color: #4b5563; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>📦 Inventar Starter</h1>
+      <p>Arbeitsbasis für die Übung: <strong>FastAPI</strong>, <strong>Postgres</strong> und <strong>Mosquitto</strong> sind vorbereitet, die eigentliche Inventar-Funktionalität baut ihr selbst.</p>
+      <p class="hint">Der <code>grades-starter</code> dient als Referenz für Struktur, Formulare, Templates und CRUD-Muster.</p>
+      <div class="links">
+        <a href="/health">/health</a>
+        <a href="/inventory">/inventory</a>
+        <a href="/docs">/docs</a>
+      </div>
+
+      <h2>Was ist schon da?</h2>
+      <ul>
+        <li>Docker-/Compose-Setup mit API, Postgres und MQTT</li>
+        <li>Health-Check für DB und MQTT</li>
+        <li>Jinja-Templates und Form-Support via <code>python-multipart</code></li>
+        <li>Platzhalter-Datei <code>db/init/010_inventory_schema.sql</code> für euer Schema</li>
+        <li>MQTT-Publish-Endpunkt für schnelle Tests</li>
+      </ul>
+
+      <h2>MQTT Publish (Quick Demo)</h2>
+      <form onsubmit="publish(event)">
+        <label>Topic</label>
+        <input id="topic" value="inventory/test" />
+        <label>Payload</label>
+        <input id="payload" value="hello" />
+        <button>Senden</button>
+      </form>
+      <pre id="out"></pre>
+    </div>
+
+    <script>
+      async function publish(e){
+        e.preventDefault();
+        const t = document.getElementById('topic').value;
+        const p = document.getElementById('payload').value;
+        const res = await fetch(`/mqtt/publish?topic=${encodeURIComponent(t)}&payload=${encodeURIComponent(p)}`, { method: 'POST' });
+        const txt = await res.text();
+        document.getElementById('out').textContent = txt;
+      }
+    </script>
+  </body>
+</html>

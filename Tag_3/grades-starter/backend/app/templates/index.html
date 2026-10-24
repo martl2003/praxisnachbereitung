@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <style>
+      :root { font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial; }
+      body { margin: 0; padding: 2rem; background: #f3f4f6; }
+      .card { max-width: 880px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+      h1 { margin-top: 0; }
+      h2 { margin-top: 1.75rem; }
+      ul { padding-left: 1.2rem; }
+      a { color: #2563eb; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code { background: #3789db; padding: .15rem .35rem; border-radius: 4px; }
+      pre { background: #4ce75e; color: #e5e7eb; padding: 1rem; border-radius: 8px; overflow: auto; font-size: .85rem; }
+      .hint { color: #4b5563; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>🎓 Grades Starter</h1>
+      <p>Demo-App mit <strong>FastAPI</strong>, <strong>Postgres</strong> und <strong>MQTT</strong> für die Domäne <em>Studierende / Module / Grade</em>.</p>
+      <p class="hint">Dieses Projekt ist das Referenzprojekt für Tag 3. Die eigentliche Übung entwickelt ihr im <code>inventar-starter</code>.</p>
+      <p class="hint">Tag 3 zeigt hier den Schritt vom technischen Grund-Stack aus Tag 2 hin zu einem kleinen fachlichen Beispiel mit relationalem Modell, Formularen, UI-Flow und CSV-Export.</p>
+
+      <h2>Nützliche Links</h2>
+      <ul>
+        <li><a href="/students">/students</a> – Studierende verwalten</li>
+        <li><a href="/grades">/grades</a> – Notenübersicht &amp; Formular</li>
+        <li><a href="/grades.csv">/grades.csv</a> – CSV-Export aller Noten</li>
+        <li><a href="/health">/health</a> – Health-Check mit DB- und MQTT-Status</li>
+        <li><a href="/docs">/docs</a> – OpenAPI-Dokumentation</li>
+      </ul>
+
+      <h2>MQTT: Neue Note per Topic anlegen</h2>
+      <p>Der Service hört auf das Topic <code>grades/new</code>. Payload (JSON) z. B.:</p>
+      <pre><code>{ "student_id": 1, "module_id": 2, "grade_value": "1,7" }</code></pre>
+
+      <p>Beispiel mit <code>mosquitto_pub</code> auf dem Host:</p>
+      <pre><code>mosquitto_pub -h localhost -p 1883 -t "grades/new" -m '{"student_id":1,"module_id":2,"grade_value":"1,0"}'</code></pre>
+    </div>
+  </body>
+</html>

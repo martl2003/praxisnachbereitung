@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <style>
+      :root { font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial; }
+      body { margin: 0; padding: 2rem; background: #f3f4f6; }
+      .card { max-width: 1100px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+      h1 { margin-top: 0; }
+      form { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; }
+      label { display:flex; flex-direction: column; gap: .2rem; font-size: .9rem; }
+      input { width: 220px; padding: .35rem .55rem; border-radius: 8px; border: 1px solid #d1d5db; }
+      input.short { width: 120px; }
+      .full-row { width: 100%; }
+      button { padding: .45rem .9rem; border-radius: 999px; border: none; background: #2563eb; color: white; cursor: pointer; }
+      button:hover { background: #1d4ed8; }
+      table { border-collapse: collapse; width: 100%; margin-top: 1.5rem; }
+      th, td { border: 1px solid #e5e7eb; padding: .6rem .7rem; text-align: left; font-size: .9rem; }
+      th { background: #f9fafb; }
+      .actions { display: flex; gap: .5rem; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Studierende verwalten</h1>
+
+      <h3>Studierende anlegen</h3>
+      <form method="post" action="/students">
+        <input type="hidden" name="return_to" value="/students" />
+        <label>
+          Matrikel
+          <input class="short" type="text" name="matrikel" required />
+        </label>
+        <label>
+          Vorname
+          <input type="text" name="vorname" required />
+        </label>
+        <label>
+          Nachname
+          <input type="text" name="nachname" required />
+        </label>
+        <label>
+          Studiengang
+          <input type="text" name="programme" required />
+        </label>
+        <label>
+          Semester
+          <input class="short" type="number" name="semester" min="1" max="12" required />
+        </label>
+        <div class="full-row">
+          <button type="submit">Speichern</button>
+        </div>
+      </form>
+
+      <h3>Liste Studierende</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Matrikel</th>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Studiengang</th>
+            <th>Semester</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+            <tr>
+              <td>{{ s.matrikel }}</td>
+              <td>{{ s.vorname }}</td>
+              <td>{{ s.nachname }}</td>
+              <td>{{ s.programme }}</td>
+              <td>{{ s.semester }}</td>
+              <td><a href="/students/{{ s.student_id }}/edit">Bearbeiten</a></td>
+              <td>
+                <form method="post" action="/students/{{ s.student_id }}/delete" onsubmit="return confirm('Studierende*n wirklich löschen?');">
+                  <input type="hidden" name="return_to" value="/students" />
+                  <button type="submit" style="background:#dc2626;">Löschen</button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6"><em>Keine Studierenden vorhanden.</em></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

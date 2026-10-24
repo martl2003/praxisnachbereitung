@@ -1,0 +1,9 @@
+-- TODO: Inventar-Schema für Tag 3
+--
+-- Legt hier euer Datenmodell für die Inventar-App an.
+-- Vorschlag für die Reihenfolge:
+--   1. Stammdaten-Tabellen (department, person, device_type, location)
+--   2. device
+--   3. assignment
+--
+-- Ergänzt anschließend kleine Seed-Daten, damit ihr eure Flows testen könnt.

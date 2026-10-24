@@ -1,0 +1,28 @@
+<table>
+  <thead>
+    <tr>
+      <th>Studierende</th>
+      <th>Studiengang</th>
+      <th>Semester</th>
+      <th>Modul</th>
+      <th>Note</th>
+      <th>Datum</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for g in grades %}
+      <tr>
+        <td>{{ g.vorname }} {{ g.nachname }}</td>
+        <td>{{ g.programme }}</td>
+        <td>{{ g.semester }}</td>
+        <td>{{ g.module_name }}</td>
+        <td>{{ g.grade_value }}</td>
+        <td>{{ g.graded_at }}</td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="6"><em>Keine Noten vorhanden.</em></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

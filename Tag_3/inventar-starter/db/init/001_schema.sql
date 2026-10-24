@@ -1,0 +1,13 @@
+-- Basis-Datei für den Inventar Starter.
+--
+-- Diese Arbeitsbasis soll sofort startbar sein, aber fachlich noch offen bleiben.
+-- Das eigentliche Inventar-Schema ergänzt ihr in:
+--   db/init/010_inventory_schema.sql
+--
+-- Empfohlene Tabellen für die Übung:
+--   department
+--   person
+--   device_type
+--   location
+--   device
+--   assignment

@@ -1,0 +1,103 @@
+### ============================================================================
+### Inventar-App – REST & Domänenregeln (Ersatz für manuelles Testen in /docs)
+### ============================================================================
+@baseUrl = http://localhost:8000
+
+### 1. Health-Check prüfen (DB + MQTT)
+GET {{baseUrl}}/health
+Accept: application/json
+
+
+### 2. Alle Geräte abrufen
+GET {{baseUrl}}/devices
+Accept: application/json
+
+
+### 3. Neues Gerät anlegen (201 Created)
+POST {{baseUrl}}/devices
+Content-Type: application/json
+
+{
+  "serial_number": "SN-HTTP-001",
+  "device_type_id": 1,
+  "location_id": 1,
+  "note": "Testgerät aus crud_test.http"
+}
+
+
+### 4. Domänenregel IR-01 testen: Doppelte Seriennummer -> 409 Conflict
+POST {{baseUrl}}/devices
+Content-Type: application/json
+
+{
+  "serial_number": "SN-LAP-001",
+  "device_type_id": 1,
+  "location_id": 1,
+  "note": "Duplikat-Test"
+}
+
+
+### 5. Einzelnes Gerät abrufen (200 OK)
+GET {{baseUrl}}/devices/1
+Accept: application/json
+
+
+### 6. Gerät aktualisieren (PUT /devices/{device_id})
+PUT {{baseUrl}}/devices/1
+Content-Type: application/json
+
+{
+  "serial_number": "SN-MON-001",
+  "device_type_id": 2,
+  "location_id": 2,
+  "note": "Dell UltraSharp 27 (Standort Gebäude F)"
+}
+
+
+### 7. Aktive Ausleihen abrufen
+GET {{baseUrl}}/assignments/active
+Accept: application/json
+
+
+### 8. Freies Gerät ausgeben (201 Created + MQTT-Event auf inventory/assignments/issued)
+POST {{baseUrl}}/assignments
+Content-Type: application/json
+
+{
+  "device_id": 3,
+  "person_id": 1,
+  "issued_at": "2026-10-24T10:00:00+02:00"
+}
+
+
+### 9. Domänenregel IR-02 testen: Zweite aktive Ausleihe für dasselbe Gerät -> 409 Conflict
+POST {{baseUrl}}/assignments
+Content-Type: application/json
+
+{
+  "device_id": 2,
+  "person_id": 1
+}
+
+
+### 10. Domänenregel IR-03 testen: Rückgabedatum vor Ausgabedatum -> 422 Unprocessable Entity
+POST {{baseUrl}}/assignments/1/return
+Content-Type: application/json
+
+{
+  "returned_at": "2020-01-01T08:00:00+02:00"
+}
+
+
+### 11. Ausleihe regulär zurückgeben (200 OK + MQTT-Event auf inventory/assignments/returned)
+POST {{baseUrl}}/assignments/1/return
+Content-Type: application/json
+
+{
+  "returned_at": "2026-10-24T15:00:00+02:00"
+}
+
+
+### 12. Alle Ausleihen (inkl. Historie) abrufen
+GET {{baseUrl}}/assignments
+Accept: application/json

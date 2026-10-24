@@ -160,6 +160,64 @@ def fetch_assignment_by_id(cur, assignment_id: int) -> dict | None:
     return cur.fetchone()
 
 
+def get_inventory_context(
+    request: Request,
+    edit_device_id: int | None = None,
+    error: str | None = None,
+    message: str | None = None,
+) -> dict:
+    with get_conn() as conn, conn.cursor() as cur:
+        devices = fetch_devices(cur)
+        available_devices = [d for d in devices if d["status"] == "frei"]
+        active_assignments = fetch_assignments(cur, active_only=True)
+
+        cur.execute("SELECT device_type_id, name FROM device_type ORDER BY name")
+        device_types = list(cur.fetchall())
+
+        cur.execute("SELECT location_id, name FROM location ORDER BY name")
+        locations = list(cur.fetchall())
+
+        cur.execute(
+            """
+            SELECT p.person_id,
+                   p.first_name,
+                   p.last_name,
+                   p.email,
+                   d.name AS department_name
+            FROM person p
+            JOIN department d ON d.department_id = p.department_id
+            ORDER BY p.last_name, p.first_name
+            """
+        )
+        persons = list(cur.fetchall())
+
+        edit_device = fetch_device_by_id(cur, edit_device_id) if edit_device_id else None
+
+    return {
+        "request": request,
+        "title": "Inventarverwaltung",
+        "devices": devices,
+        "available_devices": available_devices,
+        "active_assignments": active_assignments,
+        "device_types": device_types,
+        "locations": locations,
+        "persons": persons,
+        "edit_device": edit_device,
+        "error": error,
+        "message": message,
+    }
+
+
+def wants_html(request: Request) -> bool:
+    if request.headers.get("HX-Request") == "true":
+        return True
+    content_type = request.headers.get("content-type", "")
+    accept = request.headers.get("accept", "")
+    return (
+        "application/x-www-form-urlencoded" in content_type or "multipart/form-data" in content_type
+    ) and "text/html" in accept
+
+
 @app.get("/health")
 async def health():
     db_state = "ok"
@@ -186,8 +244,14 @@ async def index(request: Request):
 
 
 @app.get("/inventory", response_class=HTMLResponse)
-async def inventory_page(request: Request):
-    return templates.TemplateResponse("inventory.html", {"request": request, "title": "Inventar Starter"})
+async def inventory_page(
+    request: Request,
+    edit_device_id: int | None = None,
+    error: str | None = None,
+    message: str | None = None,
+):
+    ctx = get_inventory_context(request, edit_device_id=edit_device_id, error=error, message=message)
+    return templates.TemplateResponse("inventory.html", ctx)
 
 
 @app.get("/devices", response_model=list[DeviceOut])
@@ -223,6 +287,9 @@ async def create_device(request: Request):
     data: DeviceCreate = await parse_payload(request, DeviceCreate)
     serial = data.serial_number.strip()
     if not serial:
+        if wants_html(request):
+            ctx = get_inventory_context(request, error="Seriennummer darf nicht leer sein.")
+            return templates.TemplateResponse("inventory.html", ctx, status_code=422)
         raise HTTPException(status_code=422, detail="serial_number darf nicht leer sein.")
 
     try:
@@ -238,17 +305,23 @@ async def create_device(request: Request):
             created = cur.fetchone()
             device = fetch_device_by_id(cur, created["device_id"])
     except psycopg.errors.UniqueViolation as exc:
-        # IR-01: serial_number ist eindeutig
-        raise HTTPException(
-            status_code=409,
-            detail=f"IR-01 verletzt: Seriennummer '{serial}' existiert bereits.",
-        ) from exc
+        detail = f"IR-01 verletzt: Seriennummer '{serial}' existiert bereits."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=409, detail=detail) from exc
     except psycopg.errors.ForeignKeyViolation as exc:
-        raise HTTPException(
-            status_code=422,
-            detail="Ungültige device_type_id oder location_id.",
-        ) from exc
+        detail = "Ungültige device_type_id oder location_id."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=422, detail=detail) from exc
 
+    if wants_html(request):
+        if request.headers.get("HX-Request") == "true":
+            ctx = get_inventory_context(request, message=f"Gerät '{serial}' wurde angelegt.")
+            return templates.TemplateResponse("inventory.html", ctx)
+        return RedirectResponse("/inventory", status_code=303)
     return JSONResponse(status_code=201, content=device)
 
 
@@ -265,10 +338,14 @@ async def create_device(request: Request):
         }
     },
 )
+@app.post("/devices/{device_id}/edit", include_in_schema=False)
 async def update_device(device_id: int, request: Request):
     data: DeviceUpdate = await parse_payload(request, DeviceUpdate)
     serial = data.serial_number.strip()
     if not serial:
+        if wants_html(request):
+            ctx = get_inventory_context(request, edit_device_id=device_id, error="Seriennummer darf nicht leer sein.")
+            return templates.TemplateResponse("inventory.html", ctx)
         raise HTTPException(status_code=422, detail="serial_number darf nicht leer sein.")
 
     try:
@@ -290,32 +367,47 @@ async def update_device(device_id: int, request: Request):
                 raise HTTPException(status_code=404, detail="Device nicht gefunden.")
             device = fetch_device_by_id(cur, device_id)
     except psycopg.errors.UniqueViolation as exc:
-        raise HTTPException(
-            status_code=409,
-            detail=f"IR-01 verletzt: Seriennummer '{serial}' existiert bereits.",
-        ) from exc
+        detail = f"IR-01 verletzt: Seriennummer '{serial}' existiert bereits."
+        if wants_html(request):
+            ctx = get_inventory_context(request, edit_device_id=device_id, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=409, detail=detail) from exc
     except psycopg.errors.ForeignKeyViolation as exc:
-        raise HTTPException(
-            status_code=422,
-            detail="Ungültige device_type_id oder location_id.",
-        ) from exc
+        detail = "Ungültige device_type_id oder location_id."
+        if wants_html(request):
+            ctx = get_inventory_context(request, edit_device_id=device_id, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=422, detail=detail) from exc
 
+    if wants_html(request):
+        if request.headers.get("HX-Request") == "true":
+            ctx = get_inventory_context(request, message=f"Gerät '{serial}' wurde aktualisiert.")
+            return templates.TemplateResponse("inventory.html", ctx)
+        return RedirectResponse("/inventory", status_code=303)
     return device
 
 
 @app.delete("/devices/{device_id}")
-async def delete_device(device_id: int):
+@app.post("/devices/{device_id}/delete", include_in_schema=False)
+async def delete_device(device_id: int, request: Request):
     try:
         with get_conn() as conn, conn.cursor() as cur:
-            cur.execute("DELETE FROM device WHERE device_id = %s RETURNING device_id", (device_id,))
+            cur.execute("DELETE FROM device WHERE device_id = %s RETURNING device_id, serial_number", (device_id,))
             deleted = cur.fetchone()
             if not deleted:
                 raise HTTPException(status_code=404, detail="Device nicht gefunden.")
     except psycopg.errors.ForeignKeyViolation as exc:
-        raise HTTPException(
-            status_code=409,
-            detail="Device kann nicht gelöscht werden, da Ausleihen zu diesem Gerät existieren.",
-        ) from exc
+        detail = "Gerät kann nicht gelöscht werden, da Ausleihen (Historie) dazu existieren."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=409, detail=detail) from exc
+
+    if wants_html(request):
+        if request.headers.get("HX-Request") == "true":
+            ctx = get_inventory_context(request, message=f"Gerät '{deleted['serial_number']}' wurde gelöscht.")
+            return templates.TemplateResponse("inventory.html", ctx)
+        return RedirectResponse("/inventory", status_code=303)
     return {"ok": True, "deleted_device_id": device_id}
 
 
@@ -351,16 +443,16 @@ async def create_assignment(request: Request):
 
     try:
         with get_conn() as conn, conn.cursor() as cur:
-            # Prüfen, ob Device bereits aktiv ausgeliehen ist (IR-02)
             cur.execute(
                 "SELECT assignment_id FROM assignment WHERE device_id = %s AND returned_at IS NULL",
                 (data.device_id,),
             )
             if cur.fetchone():
-                raise HTTPException(
-                    status_code=409,
-                    detail=f"IR-02 verletzt: Device {data.device_id} hat bereits eine aktive Ausleihe.",
-                )
+                detail = f"IR-02 verletzt: Device {data.device_id} hat bereits eine aktive Ausleihe."
+                if wants_html(request):
+                    ctx = get_inventory_context(request, error=detail)
+                    return templates.TemplateResponse("inventory.html", ctx)
+                raise HTTPException(status_code=409, detail=detail)
 
             if issued_dt is not None:
                 cur.execute(
@@ -383,17 +475,26 @@ async def create_assignment(request: Request):
             created = cur.fetchone()
             assignment = fetch_assignment_by_id(cur, created["assignment_id"])
     except psycopg.errors.UniqueViolation as exc:
-        # IR-02 auf DB-Ebene (uq_assignment_active_device)
-        raise HTTPException(
-            status_code=409,
-            detail=f"IR-02 verletzt: Device {data.device_id} hat bereits eine aktive Ausleihe.",
-        ) from exc
+        detail = f"IR-02 verletzt: Device {data.device_id} hat bereits eine aktive Ausleihe."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=409, detail=detail) from exc
     except psycopg.errors.ForeignKeyViolation as exc:
-        raise HTTPException(
-            status_code=422,
-            detail="Ungültige device_id oder person_id.",
-        ) from exc
+        detail = "Ungültige device_id oder person_id."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=422, detail=detail) from exc
 
+    if wants_html(request):
+        if request.headers.get("HX-Request") == "true":
+            ctx = get_inventory_context(
+                request,
+                message=f"Gerät '{assignment['serial_number']}' an {assignment['person_name']} ausgegeben.",
+            )
+            return templates.TemplateResponse("inventory.html", ctx)
+        return RedirectResponse("/inventory", status_code=303)
     return assignment
 
 
@@ -424,15 +525,19 @@ async def return_assignment(assignment_id: int, request: Request):
             if not existing:
                 raise HTTPException(status_code=404, detail="Ausleihe nicht gefunden.")
             if existing["returned_at"] is not None:
-                raise HTTPException(status_code=409, detail="Ausleihe wurde bereits zurückgegeben.")
+                detail = "Ausleihe wurde bereits zurückgegeben."
+                if wants_html(request):
+                    ctx = get_inventory_context(request, error=detail)
+                    return templates.TemplateResponse("inventory.html", ctx)
+                raise HTTPException(status_code=409, detail=detail)
 
             effective_return = returned_dt or datetime.now(timezone.utc)
-            # IR-03: returned_at darf nicht vor issued_at liegen
             if effective_return < existing["issued_at"]:
-                raise HTTPException(
-                    status_code=422,
-                    detail="IR-03 verletzt: returned_at darf nicht vor issued_at liegen.",
-                )
+                detail = "IR-03 verletzt: returned_at darf nicht vor issued_at liegen."
+                if wants_html(request):
+                    ctx = get_inventory_context(request, error=detail)
+                    return templates.TemplateResponse("inventory.html", ctx)
+                raise HTTPException(status_code=422, detail=detail)
 
             cur.execute(
                 """
@@ -444,11 +549,20 @@ async def return_assignment(assignment_id: int, request: Request):
             )
             assignment = fetch_assignment_by_id(cur, assignment_id)
     except psycopg.errors.CheckViolation as exc:
-        raise HTTPException(
-            status_code=422,
-            detail="IR-03 verletzt: returned_at darf nicht vor issued_at liegen.",
-        ) from exc
+        detail = "IR-03 verletzt: returned_at darf nicht vor issued_at liegen."
+        if wants_html(request):
+            ctx = get_inventory_context(request, error=detail)
+            return templates.TemplateResponse("inventory.html", ctx)
+        raise HTTPException(status_code=422, detail=detail) from exc
 
+    if wants_html(request):
+        if request.headers.get("HX-Request") == "true":
+            ctx = get_inventory_context(
+                request,
+                message=f"Gerät '{assignment['serial_number']}' wurde zurückgegeben.",
+            )
+            return templates.TemplateResponse("inventory.html", ctx)
+        return RedirectResponse("/inventory", status_code=303)
     return assignment
 
 
@@ -458,4 +572,5 @@ async def mqtt_publish(topic: str = Query(...), payload: str = Query(...)):
     c.publish(topic, payload, qos=0, retain=False)
     c.disconnect()
     return {"ok": True, "topic": topic, "payload": payload}
+
 

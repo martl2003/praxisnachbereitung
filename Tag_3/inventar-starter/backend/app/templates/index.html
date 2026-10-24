@@ -6,48 +6,77 @@
     <title>{{ title }}</title>
     <style>
       :root { font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial; }
-      body { margin: 0; padding: 2rem; background: #f3f4f6; }
-      .card { max-width: 920px; margin: 2rem auto; padding: 2rem; background: white; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
-      h1 { margin-top: 0; }
-      h2 { margin-top: 1.75rem; }
-      code { background: #4e9ae6; padding: .15rem .4rem; border-radius: 6px; }
-      pre { background: #406ce5; color: #eaeef3; padding: 1rem; border-radius: 8px; overflow: auto; }
-      .links a { display:inline-block; margin-right: 1rem; }
-      label { display:block; margin-top: .75rem; }
-      input { width: 100%; padding: .5rem .6rem; border: 1px solid #e5e7eb; border-radius: 8px; }
-      button { margin-top: .75rem; padding: .5rem .9rem; border-radius: 10px; border: 1px solid #e5e7eb; background: white; cursor: pointer; }
-      .hint { color: #4b5563; }
+      body { margin: 0; padding: 2rem; background: #f3f4f6; color: #111827; }
+      .card { max-width: 960px; margin: 2rem auto; padding: 2rem; background: white; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+      h1 { margin-top: 0; margin-bottom: .5rem; }
+      h2 { margin-top: 1.75rem; font-size: 1.2rem; }
+      code { background: #eff6ff; color: #1e40af; padding: .15rem .4rem; border-radius: 6px; font-size: .88rem; }
+      pre { background: #1e293b; color: #f8fafc; padding: 1rem; border-radius: 8px; overflow: auto; font-size: .88rem; }
+      .links { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.25rem 0; }
+      .links a { display: inline-block; padding: .5rem 1rem; border-radius: 999px; background: #2563eb; color: white; text-decoration: none; font-weight: 500; font-size: .9rem; }
+      .links a.secondary { background: #e5e7eb; color: #1f2937; }
+      .links a:hover { opacity: .92; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1rem; }
+      .box { padding: 1rem 1.25rem; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; }
+      .box h3 { margin-top: 0; font-size: 1rem; }
+      ul { padding-left: 1.2rem; margin: .5rem 0; }
+      li { margin-bottom: .35rem; font-size: .92rem; }
+      label { display: block; margin-top: .75rem; font-size: .88rem; font-weight: 500; }
+      input { width: 100%; box-sizing: border-box; padding: .5rem .6rem; border: 1px solid #d1d5db; border-radius: 8px; margin-top: .25rem; }
+      button { margin-top: .75rem; padding: .5rem 1rem; border-radius: 999px; border: none; background: #2563eb; color: white; font-weight: 500; cursor: pointer; }
+      button:hover { background: #1d4ed8; }
+      .muted { color: #4b5563; font-size: .95rem; }
     </style>
   </head>
   <body>
     <div class="card">
-      <h1>📦 Inventar Starter</h1>
-      <p>Arbeitsbasis für die Übung: <strong>FastAPI</strong>, <strong>Postgres</strong> und <strong>Mosquitto</strong> sind vorbereitet, die eigentliche Inventar-Funktionalität baut ihr selbst.</p>
-      <p class="hint">Der <code>grades-starter</code> dient als Referenz für Struktur, Formulare, Templates und CRUD-Muster.</p>
+      <h1>📦 Inventar-App</h1>
+      <p class="muted">
+        Anwendung zur Verwaltung von Geräten (<strong>Devices</strong>) und Ausleihen (<strong>Assignments</strong>)
+        mit <strong>FastAPI</strong>, <strong>PostgreSQL</strong>, <strong>HTMX</strong> und <strong>MQTT (Mosquitto)</strong>.
+      </p>
+
       <div class="links">
-        <a href="/health">/health</a>
-        <a href="/inventory">/inventory</a>
-        <a href="/docs">/docs</a>
+        <a href="/inventory">Zur Inventar-Oberfläche (/inventory)</a>
+        <a href="/devices" class="secondary">GET /devices</a>
+        <a href="/assignments/active" class="secondary">GET /assignments/active</a>
+        <a href="/health" class="secondary">GET /health</a>
+        <a href="/docs" class="secondary">OpenAPI (/docs)</a>
       </div>
 
-      <h2>Was ist schon da?</h2>
-      <ul>
-        <li>Docker-/Compose-Setup mit API, Postgres und MQTT</li>
-        <li>Health-Check für DB und MQTT</li>
-        <li>Jinja-Templates und Form-Support via <code>python-multipart</code></li>
-        <li>Platzhalter-Datei <code>db/init/010_inventory_schema.sql</code> für euer Schema</li>
-        <li>MQTT-Publish-Endpunkt für schnelle Tests</li>
-      </ul>
+      <div class="grid">
+        <div class="box">
+          <h3>Funktionen &amp; Endpunkte</h3>
+          <ul>
+            <li><strong>Geräte (CRUD):</strong> <code>GET/POST /devices</code>, <code>PUT/DELETE /devices/{id}</code></li>
+            <li><strong>Ausleihen:</strong> <code>GET /assignments/active</code>, <code>POST /assignments</code></li>
+            <li><strong>Rückgabe:</strong> <code>POST /assignments/{id}/return</code></li>
+            <li><strong>HTMX-UI:</strong> Teil-Updates unter <code>/inventory</code> mit CSS-Animation</li>
+          </ul>
+        </div>
 
-      <h2>MQTT Publish (Quick Demo)</h2>
+        <div class="box">
+          <h3>Umgesetzte Domänenregeln</h3>
+          <ul>
+            <li><strong>IR-01:</strong> <code>serial_number</code> ist eindeutig (<code>409 Conflict</code>)</li>
+            <li><strong>IR-02:</strong> Max. eine aktive Ausleihe je Device (<code>409 Conflict</code>)</li>
+            <li><strong>IR-03:</strong> <code>returned_at &gt;= issued_at</code> (<code>422 Unprocessable Entity</code>)</li>
+            <li><strong>MQTT-Events:</strong> <code>inventory/assignments/issued</code> &amp; <code>returned</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>MQTT Test-Publish</h2>
       <form onsubmit="publish(event)">
-        <label>Topic</label>
-        <input id="topic" value="inventory/test" />
-        <label>Payload</label>
-        <input id="payload" value="hello" />
-        <button>Senden</button>
+        <label>Topic
+          <input id="topic" value="inventory/test" />
+        </label>
+        <label>Payload
+          <input id="payload" value="hello" />
+        </label>
+        <button type="submit">Nachricht senden</button>
       </form>
-      <pre id="out"></pre>
+      <pre id="out">Bereit zum Senden...</pre>
     </div>
 
     <script>
@@ -62,3 +91,4 @@
     </script>
   </body>
 </html>
+

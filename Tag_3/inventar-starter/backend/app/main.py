@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import json
 import os
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -22,12 +23,34 @@ templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "t
 
 MQTT_HOST = os.getenv("MQTT_HOST", "mqtt")
 MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
+MQTT_ISSUED_TOPIC = os.getenv("MQTT_ISSUED_TOPIC", "inventory/assignments/issued")
+MQTT_RETURNED_TOPIC = os.getenv("MQTT_RETURNED_TOPIC", "inventory/assignments/returned")
 
 
 def mqtt_client() -> mqtt.Client:
     c = mqtt.Client()
     c.connect(MQTT_HOST, MQTT_PORT, keepalive=30)
     return c
+
+
+def publish_assignment_event(topic: str, event_type: str, assignment: dict) -> None:
+    payload = {
+        "event": event_type,
+        "assignment_id": assignment["assignment_id"],
+        "device_id": assignment["device_id"],
+        "serial_number": assignment["serial_number"],
+        "person_id": assignment["person_id"],
+        "person_name": assignment["person_name"],
+        "issued_at": assignment["issued_at"].isoformat() if assignment.get("issued_at") else None,
+        "returned_at": assignment["returned_at"].isoformat() if assignment.get("returned_at") else None,
+    }
+    try:
+        c = mqtt_client()
+        c.publish(topic, json.dumps(payload), qos=0, retain=False)
+        c.disconnect()
+    except Exception as exc:
+        print(f"[MQTT] Publish auf '{topic}' fehlgeschlagen:", exc)
+
 
 
 def parse_timestamp(value: str | None, field_name: str) -> datetime | None:
@@ -487,6 +510,8 @@ async def create_assignment(request: Request):
             return templates.TemplateResponse("inventory.html", ctx)
         raise HTTPException(status_code=422, detail=detail) from exc
 
+    publish_assignment_event(MQTT_ISSUED_TOPIC, "issued", assignment)
+
     if wants_html(request):
         if request.headers.get("HX-Request") == "true":
             ctx = get_inventory_context(
@@ -554,6 +579,8 @@ async def return_assignment(assignment_id: int, request: Request):
             ctx = get_inventory_context(request, error=detail)
             return templates.TemplateResponse("inventory.html", ctx)
         raise HTTPException(status_code=422, detail=detail) from exc
+
+    publish_assignment_event(MQTT_RETURNED_TOPIC, "returned", assignment)
 
     if wants_html(request):
         if request.headers.get("HX-Request") == "true":

@@ -1,0 +1,6 @@
+-- Ab Tag 4 wird das Inventar-Schema NICHT mehr per Init-SQL angelegt,
+-- sondern versioniert über Alembic-Migrationen:
+--   backend/migrations/versions/
+--
+-- Schema anlegen bzw. aktualisieren:
+--   docker compose exec api alembic upgrade head

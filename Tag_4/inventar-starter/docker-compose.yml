@@ -1,0 +1,57 @@
+name: inventar-tag4
+
+services:
+  db:
+    image: postgres:16
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - ${DB_INIT_DIR}:/docker-entrypoint-initdb.d:ro
+
+    ports:
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}"
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+
+  mqtt:
+    image: eclipse-mosquitto:2
+
+    ports:
+      - "${MQTT_HOST_PORT}:${MQTT_PORT}"
+      - "${MQTT_WS_HOST_PORT}:${MQTT_WS_PORT}"
+
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+
+  api:
+    build: .
+
+    depends_on:
+      db:
+        condition: service_healthy
+      mqtt:
+        condition: service_started
+
+    ports:
+      - "${API_HOST_PORT}:${API_CONTAINER_PORT}"
+    env_file:
+      - .env
+
+    volumes:
+      - ./backend:/app/backend:rw
+      - ./alembic.ini:/app/alembic.ini:ro
+

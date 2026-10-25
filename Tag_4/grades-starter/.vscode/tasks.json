@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compose up",
+      "type": "shell",
+      "command": "docker compose up -d --build"
+    },
+    {
+      "label": "compose down",
+      "type": "shell",
+      "command": "docker compose down"
+    },
+    {
+      "label": "logs api",
+      "type": "shell",
+      "command": "docker compose logs -f api"
+    },
+    {
+      "label": "logs mqtt",
+      "type": "shell",
+      "command": "docker compose logs -f mqtt"
+    }
+  ]
+}
